@@ -1,0 +1,9 @@
+version: '2'
+services:
+  akka-http-example:
+    build:
+      context: .
+      args:
+        JAR_NAME: akka-http-example.jar
+    ports:
+      - "8080:8080"

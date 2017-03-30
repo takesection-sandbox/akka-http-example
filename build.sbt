@@ -6,8 +6,16 @@ lazy val commonSettings = Seq(
 )
 
 lazy val root = (project in file("./modules/root"))
+    .dependsOn(domain)
     .settings(commonSettings: _*)
     .settings(
         name := "akka-http-example",
         libraryDependencies ++= rootDeps
     )
+
+lazy val domain = (project in file("./modules/domain"))
+  .settings(commonSettings: _*)
+  .settings(
+    name := "akka-http-example-domain",
+    libraryDependencies ++= domainDeps
+  )

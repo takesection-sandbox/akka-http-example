@@ -6,7 +6,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 
-object Server {
+object App {
 
   def main(args: Array[String]) {
     implicit val system = ActorSystem("example")
@@ -21,7 +21,7 @@ object Server {
       }
     }
 
-    Http().bindAndHandle(route, "localhost", 8080)
+    Http().bindAndHandle(route, "0.0.0.0", 8080)
   }
 
 }
