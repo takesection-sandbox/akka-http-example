@@ -13,7 +13,7 @@ class OneTimePasswordAlgorithmSpec extends Specification {
       val key = secret.getBytes
       val counter: Array[Byte] = 0l
 
-      val bytes = OneTimePasswordAlgorithm.hmacSha1(key, counter)
+      val bytes = OneTimePasswordAlgorithm.hmac(key, counter)
 
       bytes.get(0) must_== 0xcc.toByte
     }
@@ -23,7 +23,7 @@ class OneTimePasswordAlgorithmSpec extends Specification {
       val counter: Array[Byte] = 0l
 
       val otp = for {
-        bytes <- OneTimePasswordAlgorithm.hmacSha1(key, counter)
+        bytes <- OneTimePasswordAlgorithm.hmac(key, counter)
         otp <- OneTimePasswordAlgorithm.truncate(bytes)
       } yield otp
 

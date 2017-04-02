@@ -6,20 +6,46 @@ import javax.crypto.spec.SecretKeySpec
 
 import scala.util.Try
 
+trait HMAC {
+
+  def hmac(key: Array[Byte], text: Array[Byte]): Try[Array[Byte]]
+
+}
+
+trait `HMAC-SHA1` extends HMAC {
+
+  override def hmac(key: Array[Byte], text: Array[Byte]): Try[Array[Byte]] = Try {
+    val hmac = Mac.getInstance("HmacSHA1")
+    val keySpec = new SecretKeySpec(key, "RAW")
+    hmac.init(keySpec)
+    hmac.doFinal(text)
+  }
+}
+
+trait `HMAC-SHA256` extends HMAC {
+
+  override def hmac(key: Array[Byte], text: Array[Byte]): Try[Array[Byte]] = Try {
+    val hmac = Mac.getInstance("HmacSHA256")
+    val keySpec = new SecretKeySpec(key, "RAW")
+    hmac.init(keySpec)
+    hmac.doFinal(text)
+  }
+}
+
+trait `HMAC-SHA512` extends HMAC {
+
+  override def hmac(key: Array[Byte], text: Array[Byte]): Try[Array[Byte]] = Try {
+    val hmac = Mac.getInstance("HmacSHA512")
+    val keySpec = new SecretKeySpec(key, "RAW")
+    hmac.init(keySpec)
+    hmac.doFinal(text)
+  }
+}
+
 /**
   * @see https://tools.ietf.org/html/rfc4226
   */
-object OneTimePasswordAlgorithm {
-
-  // HMAC-SHA1(KEY, COUNTER)
-  def hmacSha1: (Array[Byte], Array[Byte]) => Try[Array[Byte]] = {
-    (key, counter) => Try {
-      val hmac = Mac.getInstance("HmacSHA1")
-      val keySpec = new SecretKeySpec(key, "RAW")
-      hmac.init(keySpec)
-      hmac.doFinal(counter)
-    }
-  }
+object OneTimePasswordAlgorithm extends `HMAC-SHA1` {
 
   // Truncate(HMAC-SHA1(Key, Counter))
   def truncate(hs: Array[Byte]): Try[String] = Try {
