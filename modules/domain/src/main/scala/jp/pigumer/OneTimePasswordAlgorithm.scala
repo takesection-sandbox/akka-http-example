@@ -6,13 +6,13 @@ import javax.crypto.spec.SecretKeySpec
 
 import scala.util.Try
 
-trait HMAC {
+trait `Hash-basedMessageAuthenticationCode` {
 
   def hmac(key: Array[Byte], text: Array[Byte]): Try[Array[Byte]]
 
 }
 
-trait `HMAC-SHA1` extends HMAC {
+trait `HMAC-SHA1` extends `Hash-basedMessageAuthenticationCode` {
 
   override def hmac(key: Array[Byte], text: Array[Byte]): Try[Array[Byte]] = Try {
     val hmac = Mac.getInstance("HmacSHA1")
@@ -22,7 +22,7 @@ trait `HMAC-SHA1` extends HMAC {
   }
 }
 
-trait `HMAC-SHA256` extends HMAC {
+trait `HMAC-SHA256` extends `Hash-basedMessageAuthenticationCode` {
 
   override def hmac(key: Array[Byte], text: Array[Byte]): Try[Array[Byte]] = Try {
     val hmac = Mac.getInstance("HmacSHA256")
@@ -32,7 +32,7 @@ trait `HMAC-SHA256` extends HMAC {
   }
 }
 
-trait `HMAC-SHA512` extends HMAC {
+trait `HMAC-SHA512` extends `Hash-basedMessageAuthenticationCode` {
 
   override def hmac(key: Array[Byte], text: Array[Byte]): Try[Array[Byte]] = Try {
     val hmac = Mac.getInstance("HmacSHA512")
