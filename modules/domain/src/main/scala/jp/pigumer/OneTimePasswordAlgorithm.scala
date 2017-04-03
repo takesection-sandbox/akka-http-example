@@ -6,36 +6,12 @@ import javax.crypto.spec.SecretKeySpec
 
 import scala.util.Try
 
+case class Algorithm(algorithm: String)
+
 trait `Hash-basedMessageAuthenticationCode` {
 
-  def hmac(key: Array[Byte], text: Array[Byte]): Try[Array[Byte]]
-
-}
-
-trait `HMAC-SHA1` extends `Hash-basedMessageAuthenticationCode` {
-
-  override def hmac(key: Array[Byte], text: Array[Byte]): Try[Array[Byte]] = Try {
-    val hmac = Mac.getInstance("HmacSHA1")
-    val keySpec = new SecretKeySpec(key, "RAW")
-    hmac.init(keySpec)
-    hmac.doFinal(text)
-  }
-}
-
-trait `HMAC-SHA256` extends `Hash-basedMessageAuthenticationCode` {
-
-  override def hmac(key: Array[Byte], text: Array[Byte]): Try[Array[Byte]] = Try {
-    val hmac = Mac.getInstance("HmacSHA256")
-    val keySpec = new SecretKeySpec(key, "RAW")
-    hmac.init(keySpec)
-    hmac.doFinal(text)
-  }
-}
-
-trait `HMAC-SHA512` extends `Hash-basedMessageAuthenticationCode` {
-
-  override def hmac(key: Array[Byte], text: Array[Byte]): Try[Array[Byte]] = Try {
-    val hmac = Mac.getInstance("HmacSHA512")
+  def hmac(key: Array[Byte], text: Array[Byte])(implicit algorithm: Algorithm): Try[Array[Byte]] = Try {
+    val hmac = Mac.getInstance(algorithm.algorithm)
     val keySpec = new SecretKeySpec(key, "RAW")
     hmac.init(keySpec)
     hmac.doFinal(text)
@@ -45,9 +21,18 @@ trait `HMAC-SHA512` extends `Hash-basedMessageAuthenticationCode` {
 /**
   * @see https://tools.ietf.org/html/rfc4226
   */
-object OneTimePasswordAlgorithm extends `HMAC-SHA1` {
+object OneTimePasswordAlgorithm extends `Hash-basedMessageAuthenticationCode` {
 
-  // Truncate(HMAC-SHA1(Key, Counter))
+  implicit val algorithm = Algorithm("HmacSHA1")
+
+  // Truncate(HMAC(Key, Counter))
+  def otp(key: Array[Byte], counter: Long): Try[String] = {
+    for {
+      hmac <- hmac(key, counter)
+      truncated <- truncate(hmac)
+    } yield truncated
+  }
+  
   def truncate(hs: Array[Byte]): Try[String] = Try {
     val offset = hs(19) & 0xF
     val binary: Array[Byte] = Seq[Byte](

@@ -1,7 +1,7 @@
 package jp.pigumer
 
+import jp.pigumer.OneTimePasswordAlgorithm._
 import org.specs2.mutable.Specification
-import OneTimePasswordAlgorithm._
 
 class OneTimePasswordAlgorithmSpec extends Specification {
 
@@ -31,6 +31,13 @@ class OneTimePasswordAlgorithmSpec extends Specification {
 
       val s = OneTimePasswordAlgorithm.toString(123)
       s must_== "000123"
+    }
+
+    "otp" in {
+      val key = secret.getBytes
+      val counter = 0l
+
+      OneTimePasswordAlgorithm.otp(key, counter).get must_== "755224"
     }
   }
 }
