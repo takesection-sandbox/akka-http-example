@@ -10,8 +10,12 @@ object Dependencies {
   // Specs2
   val specs2 = "org.specs2" %% "specs2-core" % "3.8.9"
 
+  // config
+  val config = "com.typesafe" % "config" % "1.3.0"
+
   val domainDeps = Seq(
-    specs2 % Test
+    specs2 % Test,
+    config
   )
 
   val rootDeps = Seq(

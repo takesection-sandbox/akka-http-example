@@ -5,7 +5,10 @@ import org.specs2.mutable.Specification
 
 class OneTimePasswordAlgorithmSpec extends Specification {
 
-  val secret = "12345678901234567890"
+  import com.typesafe.config._
+
+  val config = ConfigFactory.load()
+  val secret = config.getString("app.secret")
 
   "OneTimePasswordAlgorithm" should {
 
