@@ -4,9 +4,6 @@ Resources:
     Type: "AWS::EC2::VPC"
     Properties:
       CidrBlock: 10.0.0.0/16
-      EnableDnsSupport: false
-      EnableDnsHostnames: false
-      InstanceTenancy: dedicated
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties:
@@ -20,4 +17,3 @@ Outputs:
     Value: !Ref 'Vpc1'
     Export:
       Name: 'Vpc1'
-
