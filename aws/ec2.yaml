@@ -79,7 +79,8 @@ Resources:
       LoadBalancerAttributes:
       - Key: idle_timeout.timeout_seconds
         Value: '30'
-      Subnets: !Ref 'Subnet1'
+      Subnets:
+      - !Ref 'Subnet1'
       SecurityGroups: [!Ref 'EcsSecurityGroup']
   ALBListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
