@@ -194,3 +194,4 @@ Resources:
             - 'elasticloadbalancing:RegisterTargets'
             - 'ec2:Describe*'
             - 'ec2:AuthorizeSecurityGroupIngress'
+            Resource: '*'
