@@ -1,5 +1,0 @@
-version: '2'
-services:
-  ubuntu:
-    image: ubuntu
-    command: /bin/bash
