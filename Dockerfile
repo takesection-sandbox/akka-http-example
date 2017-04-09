@@ -1,4 +1,6 @@
-FROM    alpine
+FROM alpine
+
+MAINTAINER Pigumer Group Inc.
 
 ARG     JAR_NAME
 ENV     JAR_NAME ${JAR_NAME}
