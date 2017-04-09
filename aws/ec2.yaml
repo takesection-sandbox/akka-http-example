@@ -143,6 +143,10 @@ Resources:
       DesiredCapacity: '1'
       TargetGroupARNs:
       - !Ref 'ECSTG'
+      Tags:
+      - Key: Name
+        Value: ecs-container
+        PropagateAtLaunch: true
   ECSInstances:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
