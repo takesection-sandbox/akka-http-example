@@ -11,5 +11,5 @@ docker build --build-arg JAR_NAME=akka-http-example.jar .
 # ECS
 
 ```
-ecs-cli compose -f docker-compose.yaml service up
+ecs-cli compose -f docker-compose.yaml --project-name akka-http-example service up
 ```

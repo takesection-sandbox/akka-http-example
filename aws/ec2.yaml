@@ -40,10 +40,15 @@ Resources:
       RouteTableId: !Ref 'RouteTable'
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref 'InternetGateway'
-  SubnetRouteTableAssociation:
+  SubnetRouteTableAssociation1:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId: !Ref 'Subnet1'
+      RouteTableId: !Ref 'RouteTable'
+  SubnetRouteTableAssociation2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref 'Subnet2'
       RouteTableId: !Ref 'RouteTable'
   EcsSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -136,6 +141,8 @@ Resources:
       MinSize: '1'
       MaxSize: '1'
       DesiredCapacity: '1'
+      TargetGroupARNs:
+      - !Ref 'ECSTG'
   ECSInstances:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
@@ -207,3 +214,15 @@ Resources:
             - 'ec2:Describe*'
             - 'ec2:AuthorizeSecurityGroupIngress'
             Resource: '*'
+Outputs:
+  ECSServiceRole:
+    Value: !Ref 'ECSServiceRole'
+    Export:
+      Name: ECSServiceRole
+  ECSTG:
+    Value: !Ref 'ECSTG'
+    Export:
+      Name: ECSTargetGroup
+  ECSALB:
+    Description: Your ALB DNS URL
+    Value: !Join ['', [!GetAtt [ECSALB, DNSName]]]
