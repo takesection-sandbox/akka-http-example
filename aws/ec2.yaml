@@ -224,6 +224,10 @@ Resources:
             - 'ec2:AuthorizeSecurityGroupIngress'
             Resource: '*'
 Outputs:
+  ecsSecurityGroup:
+    Value: !Ref 'EcsSecurityGroup'
+    Export:
+      Name: EcsSecurityGroup
   ECSServiceRole:
     Value: !Ref 'ECSServiceRole'
     Export:
