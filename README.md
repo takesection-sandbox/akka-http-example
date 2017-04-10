@@ -6,7 +6,7 @@
 
 ```
 sbt assembly
-docker build --build-arg JAR_NAME=akka-http-example.jar .
+docker-compose up -d --build
 ```
 # ECS
 
