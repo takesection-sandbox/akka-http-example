@@ -71,3 +71,11 @@ Outputs:
     Value: !Ref 'DBSecurityGroup'
     Export:
       Name: DBSecurityGroup
+  dbsubnet1:
+    Value: !Ref 'DBSubnet1'
+    Export:
+      Name: DBSubnet1
+  dbsubnet2:
+    Value: !Ref 'DBSubnet2'
+    Export:
+      Name: DBSubnet2
