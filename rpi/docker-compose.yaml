@@ -4,6 +4,8 @@ services:
     build:
       context: ../
       dockerfile: Dockerfile.rpi
+      args:
+        JAR_NAME: akka-http-example.jar
     container_name: akka-http-example
     ports:
       - "8080:8080"
