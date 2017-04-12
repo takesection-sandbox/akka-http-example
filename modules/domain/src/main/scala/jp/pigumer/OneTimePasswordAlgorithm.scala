@@ -26,7 +26,7 @@ object OneTimePasswordAlgorithm extends `Hash-basedMessageAuthenticationCode` {
   implicit val algorithm = Algorithm("HmacSHA1")
 
   // Truncate(HMAC(Key, Counter))
-  def otp(key: Array[Byte], counter: Long): Try[String] = {
+  def apply(key: Array[Byte], counter: Long): Try[String] = {
     for {
       hmac <- hmac(key, counter)
       truncated <- truncate(hmac)

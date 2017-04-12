@@ -1,10 +1,28 @@
 package jp.pigumer
 
-import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
+import java.time.Instant
+
+import akka.actor.{Actor, ActorSystem, Props}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
+import akka.pattern.ask
+import akka.stream.ActorMaterializer
+import akka.util.Timeout
+
+import scala.concurrent.Future
+import scala.concurrent.duration._
+
+class OneTimePassword extends Actor {
+
+  override def receive = {
+    case _ => {
+      val now: Long = Instant.now().getEpochSecond
+      val pincode = OneTimePasswordAlgorithm("test".getBytes(), now)
+      sender ! s"""{"message":"${pincode}"}"""
+    }
+  }
+}
 
 object App {
 
@@ -12,11 +30,17 @@ object App {
     implicit val system = ActorSystem("example")
     implicit val materializer = ActorMaterializer()
     implicit val executionContext = system.dispatcher
+    implicit val timeout: Timeout = 5 seconds
+
+    val otp = system.actorOf(Props[OneTimePassword])
 
     val route = {
       pathEndOrSingleSlash {
         get {
-          complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Hello World</h1>"))
+          complete {
+            val future: Future[String] = (otp ? "foo").mapTo[String]
+            future.map(s => HttpEntity(ContentTypes.`application/json`, s))
+          }
         }
       }
     }

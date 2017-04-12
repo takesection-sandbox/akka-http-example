@@ -40,7 +40,7 @@ class OneTimePasswordAlgorithmSpec extends Specification {
       val key = secret.getBytes
       val counter = 0l
 
-      OneTimePasswordAlgorithm.otp(key, counter).get must_== "755224"
+      OneTimePasswordAlgorithm.apply(key, counter).get must_== "755224"
     }
   }
 }
