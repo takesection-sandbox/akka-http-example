@@ -111,18 +111,6 @@ Resources:
       Protocol: HTTPS
       Certificates:
       - CertificateArn: !Ref 'Certificate'
-  ECSALBListenerRule:
-    Type: AWS::ElasticLoadBalancingV2::ListenerRule
-    DependsOn: ALBListener
-    Properties:
-      Actions:
-      - Type: forward
-        TargetGroupArn: !Ref 'ECSTG'
-      Conditions:
-      - Field: path-pattern
-        Values: [/]
-      ListenerArn: !Ref 'ALBListener'
-      Priority: 1
   ECSTG:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     DependsOn: ECSALB
@@ -239,3 +227,7 @@ Outputs:
   ECSALB:
     Description: Your ALB DNS URL
     Value: !Join ['', [!GetAtt [ECSALB, DNSName]]]
+  ALBListener:
+    Value: !Ref 'ALBListener'
+    Export:
+      Name: ALBListener

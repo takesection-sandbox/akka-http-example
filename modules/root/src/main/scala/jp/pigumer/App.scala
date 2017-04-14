@@ -18,7 +18,10 @@ class OneTimePassword extends Actor {
   override def receive = {
     case _ => {
       val now: Long = Instant.now().getEpochSecond
-      val pincode = OneTimePasswordAlgorithm("test".getBytes(), now)
+      val pincode = OneTimePasswordAlgorithm("test".getBytes(), now).fold(
+        t => throw t,
+        r => r
+      )
       sender ! s"""{"message":"${pincode}"}"""
     }
   }
