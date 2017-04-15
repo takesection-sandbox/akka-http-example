@@ -13,6 +13,12 @@ object Dependencies {
   // config
   val config = "com.typesafe" % "config" % "1.3.0"
 
+  // jwt
+  val auth0Jwt = "com.auth0" % "java-jwt" % "3.1.0"
+
+  // cors
+  val cors = "ch.megard" %% "akka-http-cors" % "0.2.1"
+
   val domainDeps = Seq(
     specs2 % Test,
     config
@@ -20,6 +26,8 @@ object Dependencies {
 
   val rootDeps = Seq(
     akkaHttp,
+    auth0Jwt,
+    cors,
     akkaHttpSprayJson
   )
 }

@@ -13,6 +13,8 @@ import akka.util.Timeout
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
+import jp.pigumer.common._
+
 class OneTimePassword extends Actor {
 
   override def receive = {
@@ -38,11 +40,16 @@ object App {
     val otp = system.actorOf(Props[OneTimePassword])
 
     val route = {
-      pathEndOrSingleSlash {
-        get {
-          complete {
-            val future: Future[String] = (otp ? "foo").mapTo[String]
-            future.map(s => HttpEntity(ContentTypes.`application/json`, s))
+      auth { account =>
+        pathEndOrSingleSlash {
+          get {
+            parameters('key) {
+              key =>
+                complete {
+                  val future: Future[String] = (otp ? key).mapTo[String]
+                  future.map(s => HttpEntity(ContentTypes.`application/json`, s))
+                }
+            }
           }
         }
       }
