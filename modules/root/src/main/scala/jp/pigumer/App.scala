@@ -15,6 +15,8 @@ import scala.concurrent.duration._
 
 import jp.pigumer.common._
 
+import ch.megard.akka.http.cors.scaladsl.CorsDirectives._
+
 class OneTimePassword extends Actor {
 
   override def receive = {
@@ -41,14 +43,16 @@ object App {
 
     val route = {
       auth { account =>
-        pathEndOrSingleSlash {
-          get {
-            parameters('key) {
-              key =>
-                complete {
-                  val future: Future[String] = (otp ? key).mapTo[String]
-                  future.map(s => HttpEntity(ContentTypes.`application/json`, s))
-                }
+        cors() {
+          pathEndOrSingleSlash {
+            get {
+              parameters('key) {
+                key =>
+                  complete {
+                    val future: Future[String] = (otp ? key).mapTo[String]
+                    future.map(s => HttpEntity(ContentTypes.`application/json`, s))
+                  }
+              }
             }
           }
         }
