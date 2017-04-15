@@ -20,13 +20,13 @@ import ch.megard.akka.http.cors.scaladsl.CorsDirectives._
 class OneTimePassword extends Actor {
 
   override def receive = {
+    case "foo" => sender ! Left(new RuntimeException())
     case _ => {
       val now: Long = Instant.now().getEpochSecond
       val pincode = OneTimePasswordAlgorithm("test".getBytes(), now).fold(
-        t => throw t,
-        r => r
+        t => sender ! Left(t),
+        r => sender ! Right(s"""{"message":"${r}"}""")
       )
-      sender ! s"""{"message":"${pincode}"}"""
     }
   }
 }
@@ -44,14 +44,20 @@ object App {
     val route = {
       auth { account =>
         cors() {
-          pathEndOrSingleSlash {
-            get {
-              parameters('key) {
-                key =>
-                  complete {
-                    val future: Future[String] = (otp ? key).mapTo[String]
-                    future.map(s => HttpEntity(ContentTypes.`application/json`, s))
+          handleExceptions(exceptionHandler) {
+            pathEndOrSingleSlash {
+              get {
+                parameters('key) { key =>
+                  {
+                    val future: Future[Either[Throwable, String]] = (otp ? key).mapTo[Either[Throwable, String]]
+                    complete {
+                      future.map(res =>
+                        res.fold(
+                          l => throw l,
+                          s => HttpEntity(ContentTypes.`application/json`, s)))
+                    }
                   }
+                }
               }
             }
           }

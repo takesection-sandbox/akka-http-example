@@ -1,10 +1,14 @@
 package jp.pigumer
 
+import akka.http.scaladsl.server._
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
 import akka.http.scaladsl.model.headers.{HttpChallenge, OAuth2BearerToken}
 import akka.http.scaladsl.server.directives.{AuthenticationDirective, AuthenticationResult}
 
 import scala.concurrent.Future
 import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.model.StatusCodes._
 
 package object common {
 
@@ -18,6 +22,13 @@ package object common {
         Future.successful(AuthenticationResult.failWithChallenge(
           HttpChallenge("bearer", None, Map("error" -> "invalid_token")))
         )
+    }
+  }
+
+  val exceptionHandler: ExceptionHandler = ExceptionHandler {
+    case e: Exception => extractUri { uri =>
+      e.printStackTrace
+      complete(HttpResponse(InternalServerError))
     }
   }
 }
