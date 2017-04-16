@@ -10,7 +10,7 @@ class OneTimePassword extends Actor with ActorLogging {
     case "error" => sender ! Left(new RuntimeException())
     case key: String => {
       log.info(s"key: $key")
-      val now: Long = Instant.now().getEpochSecond
+      val now: Long = Instant.now().getEpochSecond / 30
       val result = OneTimePasswordAlgorithm(key.getBytes(), now).fold(
         t => Left(t),
         r => Right(s"""{"message":"${r}"}""")
