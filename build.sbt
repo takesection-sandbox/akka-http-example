@@ -13,7 +13,7 @@ lazy val root = (project in file("./modules/root"))
   .settings(
     name := "akka-http-example",
     libraryDependencies ++= rootDeps,
-    mainClass in assembly := Some("jp.pigumer.App"),
+    mainClass in assembly := Some("jp.pigumer.boot.Main"),
     assemblyJarName in assembly := "akka-http-example.jar"
   )
 
