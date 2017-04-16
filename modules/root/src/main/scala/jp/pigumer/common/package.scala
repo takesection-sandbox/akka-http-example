@@ -26,8 +26,8 @@ package object common {
 
   val exceptionHandler: ExceptionHandler = ExceptionHandler {
     case e: Exception => extractUri { uri =>
-      e.printStackTrace
       complete(HttpResponse(InternalServerError))
     }
   }
+
 }
