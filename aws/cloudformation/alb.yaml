@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  Certificate:
+    Type: String
+    Description: The Amazon Resource Name (ARN) of the certificate to associate with the listener.
+Resources:
+  ALB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Scheme: internet-facing
+      Subnets:
+      - Fn::ImportValue: Subnet1
+      - Fn::ImportValue: Subnet2
+      LoadBalancerAttributes:
+      - Key: idle_timeout.timeout_seconds
+        Value: 30
+      SecurityGroups:
+      - Fn::ImportValue: ECSSecurityGroup
+  ALBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    DependsOn: TargetGroup
+    Properties:
+      DefaultActions:
+      - Type: forward
+        TargetGroupArn: !Ref 'TargetGroup'
+      LoadBalancerArn: !Ref 'ALB'
+      Port: '443'
+      Protocol: HTTPS
+      Certificates:
+      - CertificateArn: !Ref 'Certificate'
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    DependsOn: ALB
+    Properties:
+      HealthCheckIntervalSeconds: 10
+      HealthCheckPath: /foo
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      Matcher:
+        HttpCode: 404
+      Port: 80
+      Protocol: HTTP
+      UnhealthyThresholdCount: 2
+      VpcId:
+        Fn::ImportValue: VPC
+  ECSSecurityGroupSSHinbound:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId:
+        Fn::ImportValue: ECSSecurityGroup
+      IpProtocol: tcp
+      FromPort: '22'
+      ToPort: '22'
+      CidrIp: 0.0.0.0/0
+  ECSSecurityGroupHTTPSinbound:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId:
+        Fn::ImportValue: ECSSecurityGroup
+      IpProtocol: tcp
+      FromPort: '443'
+      ToPort: '443'
+      CidrIp: 0.0.0.0/0
+Outputs:
+  TargetGroup:
+    Value: !Ref 'TargetGroup'
+    Export:
+      Name: default-tg
+  ALBListener:
+    Value: !Ref 'ALBListener'
+    Export:
+      Name: ALBListener
+  DNSName:
+    Value:
+      Fn::GetAtt:
+      - ALB
+      - DNSName
+    Export:
+      Name: DNSName

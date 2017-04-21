@@ -4,4 +4,4 @@ services:
     image: takesection/sandbox
     container_name: akka-http-example
     ports:
-      - "8080:8080"
+    - "8080"

@@ -1,0 +1,16 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  ECSSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: EC2 Security Group
+      VpcId:
+        Fn::ImportValue: VPC
+      Tags:
+      - Key: Name
+        Value: ECSSecurityGroup
+Outputs:
+  ECSSecurityGroup:
+    Value: !Ref 'ECSSecurityGroup'
+    Export:
+      Name: ECSSecurityGroup

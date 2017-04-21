@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  Subnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Fn::ImportValue: VPC
+      CidrBlock: 10.0.0.0/24
+      AvailabilityZone:
+        Fn::Select:
+        - 0
+        - Fn::GetAZs: ""
+      Tags:
+      - Key: Name
+        Value: subnet1
+  Subnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Fn::ImportValue: VPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone:
+        Fn::Select:
+        - 1
+        - Fn::GetAZs: ""
+      Tags:
+      - Key: Name
+        Value: subnet2
+Outputs:
+  Subnet1:
+    Value: !Ref 'Subnet1'
+    Export:
+      Name: Subnet1
+  Subnet2:
+    Value: !Ref 'Subnet2'
+    Export:
+      Name: Subnet2
