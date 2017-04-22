@@ -33,12 +33,12 @@ Resources:
     DependsOn: ALB
     Properties:
       HealthCheckIntervalSeconds: 10
-      HealthCheckPath: /foo
+      HealthCheckPath: /
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2
       Matcher:
-        HttpCode: 404
+        HttpCode: 200-499
       Port: 80
       Protocol: HTTP
       UnhealthyThresholdCount: 2
