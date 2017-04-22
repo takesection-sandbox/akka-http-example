@@ -13,6 +13,11 @@ Build Docker image
   sbt assembly
   docker-compose up -d --build
 
+::
+
+  docker tag {IMAGE_ID} {REPOSITORY_ID}
+  docker push {REPOSITORY_ID}
+
 AWS ECS
 ====
 

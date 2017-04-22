@@ -5,3 +5,8 @@ services:
     container_name: akka-http-example
     ports:
     - "8080"
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: sandbox
+        awslogs-region:	ap-northeast-1
