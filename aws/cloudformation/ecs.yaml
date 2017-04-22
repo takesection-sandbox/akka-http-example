@@ -8,6 +8,11 @@ Parameters:
     Default: ECSCluster
     Description: A name for the cluster.
 Resources:
+  LOGGING:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: sandbox
+      RetentionInDays: 7
   ECSSecurityGroupALBports:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:

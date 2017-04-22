@@ -6,6 +6,8 @@ object Dependencies {
   val akkaHttpVersion = "10.0.5"
   val akkaHttp = "com.typesafe.akka" %% "akka-http" % akkaHttpVersion
   val akkaHttpSprayJson = "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion
+  val akkaSlf4j = "com.typesafe.akka" %% "akka-slf4j" % "2.4.17"
+  val logback = "ch.qos.logback" % "logback-classic" % "1.1.3"
 
   // Specs2
   val specs2 = "org.specs2" %% "specs2-core" % "3.8.9"
@@ -28,6 +30,8 @@ object Dependencies {
     akkaHttp,
     auth0Jwt,
     cors,
-    akkaHttpSprayJson
+    akkaHttpSprayJson,
+    akkaSlf4j,
+    logback
   )
 }

@@ -9,11 +9,15 @@ class OneTimePassword extends Actor with ActorLogging {
   override def receive = {
     case "error" => sender ! Left(new RuntimeException())
     case key: String => {
+      log.info("start")
+
       val now: Long = Instant.now().getEpochSecond / 30
       val result = OneTimePasswordAlgorithm(key.getBytes(), now).fold(
         t => Left(t),
         r => Right(s"""{"message":"${r}"}""")
       )
+
+      log.info("end")
       sender ! result
     }
   }

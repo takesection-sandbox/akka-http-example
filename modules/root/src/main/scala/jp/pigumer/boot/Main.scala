@@ -12,12 +12,17 @@ import akka.util.Timeout
 import ch.megard.akka.http.cors.scaladsl.CorsDirectives.cors
 import jp.pigumer.OneTimePassword
 import jp.pigumer.common.{auth, exceptionHandler}
+import org.slf4j.LoggerFactory
 
 import scala.concurrent.duration._
 
 object Main {
 
+  val log = LoggerFactory.getLogger(this.getClass)
+
   def main(args: Array[String]) {
+
+    log.info("main")
 
     implicit val system = ActorSystem("example")
     implicit val materializer = ActorMaterializer()
