@@ -8,6 +8,7 @@ object Dependencies {
   val akkaHttpSprayJson = "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion
   val akkaSlf4j = "com.typesafe.akka" %% "akka-slf4j" % "2.4.17"
   val logback = "ch.qos.logback" % "logback-classic" % "1.1.3"
+  val akkaHttpTestkit = "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion
 
   // Specs2
   val specs2 = "org.specs2" %% "specs2-core" % "3.8.9"
@@ -21,12 +22,16 @@ object Dependencies {
   // cors
   val cors = "ch.megard" %% "akka-http-cors" % "0.2.1"
 
-  val domainDeps = Seq(
+  val commonDeps = Seq(
     specs2 % Test,
-    config
+    akkaHttpTestkit % Test
+  )
+
+  val domainDeps = Seq(
   )
 
   val rootDeps = Seq(
+    config,
     akkaHttp,
     auth0Jwt,
     cors,

@@ -1,10 +1,11 @@
 import Dependencies._
-import sbt.Keys.mainClass
+import sbt.Keys.{libraryDependencies, mainClass}
 
 lazy val commonSettings = Seq(
   version := "$version$",
   organization := "jp.pigumer",
-  scalaVersion := "2.12.1"
+  scalaVersion := "2.12.1",
+  libraryDependencies ++= commonDeps
 )
 
 lazy val root = (project in file("./modules/root"))
