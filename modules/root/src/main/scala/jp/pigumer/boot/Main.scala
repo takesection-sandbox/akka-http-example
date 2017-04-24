@@ -13,7 +13,6 @@ import ch.megard.akka.http.cors.scaladsl.CorsDirectives.cors
 import jp.pigumer.OneTimePassword
 import jp.pigumer.common.{auth, exceptionHandler}
 import org.slf4j.LoggerFactory
-import spray.json._
 
 import scala.concurrent.duration._
 
