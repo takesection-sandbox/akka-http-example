@@ -9,13 +9,20 @@ import org.specs2.mutable.Specification
 
 class MainSpec extends Specification with Specs2RouteTest {
 
-  "Main" should {
+  val s = system
 
-    Get() ~> Route.seal(Main.route) ~> check {
+  val app = new AkkaApplication {
+    override def createActorSystem = s
+  }
+
+  "Main" should {
+    val route = app.route
+
+    Get() ~> Route.seal(route) ~> check {
       status must_== Unauthorized
     }
 
-    Get("/?key=1234").addHeader(Authorization(OAuth2BearerToken("123"))) ~> Main.route ~> check {
+    Get("/?key=1234").addHeader(Authorization(OAuth2BearerToken("123"))) ~> route ~> check {
       status must_== OK
     }
 
@@ -25,7 +32,7 @@ class MainSpec extends Specification with Specs2RouteTest {
         |"id": "XXX",
         |"name": "NAME"
         |}
-      """.stripMargin) ~> Main.route ~> check {
+      """.stripMargin) ~> route ~> check {
       status must_== OK
       responseAs[String] must_== "NAME"
     }

@@ -16,12 +16,14 @@ import org.slf4j.LoggerFactory
 
 import scala.concurrent.duration._
 
-object Main {
+trait AkkaApplication {
   import FooJson._
 
   val log = LoggerFactory.getLogger(this.getClass)
 
-  implicit val system = ActorSystem("example")
+  def createActorSystem = ActorSystem("example")
+
+  implicit val system = createActorSystem
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
   implicit val timeout: Timeout = 5 seconds
@@ -53,11 +55,15 @@ object Main {
     }
   }
 
+  def bindAndHandle = Http().bindAndHandle(route, "0.0.0.0", 8080)
+}
+
+object Main {
+
   def main(args: Array[String]) {
 
-    log.info("main")
-
-    Http().bindAndHandle(route, "0.0.0.0", 8080)
+    val app = new AkkaApplication {}
+    app.bindAndHandle
   }
 
 }
