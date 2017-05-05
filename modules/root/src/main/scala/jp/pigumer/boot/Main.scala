@@ -3,18 +3,21 @@ package jp.pigumer.boot
 import akka.actor.{ActorSystem, Props}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshalling.ToResponseMarshallable
+import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.pattern._
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
+import ch.megard.akka.http.cors.scaladsl.settings.CorsSettings
 import ch.megard.akka.http.cors.scaladsl.CorsDirectives.cors
 import jp.pigumer.OneTimePassword
 import jp.pigumer.common.{auth, exceptionHandler}
 import org.slf4j.LoggerFactory
 
 import scala.concurrent.duration._
+import scala.collection.immutable.Seq
 
 trait AkkaApplication {
   import FooJson._
@@ -30,11 +33,15 @@ trait AkkaApplication {
 
   val otp = system.actorOf(Props[OneTimePassword])
 
+  val corsSettings = CorsSettings.defaultSettings.copy(
+    allowedMethods = Seq(GET, POST, HEAD, PUT, DELETE, OPTIONS)
+  )
+
   def route: Route = {
     handleExceptions(exceptionHandler) {
       pathEndOrSingleSlash {
         auth { account =>
-          cors() {
+          cors(corsSettings) {
             get {
               parameters('key) { key =>
                 complete {
