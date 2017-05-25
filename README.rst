@@ -26,14 +26,6 @@ ecs-cli
 
 `ecs-cli <http://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_CLI.html>`_
 
-fabric
-======
-
-::
-
-  pip install fabric
-  pip install git+https://github.com/crossroad0201/fabric-aws-cloudformation.git
-
 CloudFormation
 ==============
 
@@ -41,33 +33,34 @@ CloudFormation
 
 ::
 
-  cd aws
-  BUCKET_NAME=YOUR_S3_BUCKET_NAME fab list_stacks
+  BUCKET_NAME=YOUR_S3_BUCKET_NAME sbt
 
 ::
 
-  BUCKET_NAME=YOUR_S3_BUCKET_NAME fab sync_templates
+  awscfCreateBucket TemplatesBucket
 
-  BUCKET_NAME=YOUR_S3_BUCKET_NAME fab create_iam
+  awscfUploadTemplates dev
 
-  BUCKET_NAME=YOUR_S3_BUCKET_NAME fab create_ecscluster
+  awscfCreateStack dev iam
 
-  BUCKET_NAME=YOUR_S3_BUCKET_NAME fab create_vpc
-  BUCKET_NAME=YOUR_S3_BUCKET_NAME fab create_subnet
-  BUCKET_NAME=YOUR_S3_BUCKET_NAME fab create_igw
-  BUCKET_NAME=YOUR_S3_BUCKET_NAME fab create_securitygroup
+  awscfCreateStack dev ecscluster
 
-  BUCKET_NAME=YOUR_S3_BUCKET_NAME fab create_alb
+  awscfCreateStack dev vpc
+  awscfCreateStack dev subnet
+  awscfCreateStack dev igw
+  awscfCreateStack dev securitygroup
 
-  BUCKET_NAME=YOUR_S3_BUCKET_NAME fab create_ecs
+  awscfCreateStack dev alb
+
+  awscfCreateStack dev ecs
 
 ::
 
-  BUCKET_NAME=YOUR_S3_BUCKET_NAME fab list_stacks
+  awscfListStacks
 
 DNSName、default-tg(target-group-arn)を確認します::
 
-  BUCKET_NAME=YOUR_S3_BUCKET_NAME fab list_exports
+  awscfListExports
 
 ::
 

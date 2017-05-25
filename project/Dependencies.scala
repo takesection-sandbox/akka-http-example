@@ -2,6 +2,10 @@ import sbt._
 
 object Dependencies {
 
+  // AWS
+  val AWSSDKVersion = "1.11.125"
+  val lambda = "com.amazonaws" % "aws-java-sdk-lambda" % AWSSDKVersion
+
   // Akka-HTTP
   val akkaHttpVersion = "10.0.5"
   val akkaHttp = "com.typesafe.akka" %% "akka-http" % akkaHttpVersion
