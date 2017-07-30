@@ -3,12 +3,12 @@ import cloudformation._
 import sbt.Keys.{libraryDependencies, mainClass}
 
 val Region = "ap-northeast-1"
-val BucketName = sys.env("BUCKET_NAME")
+val BucketName = sys.env.getOrElse("BUCKET_NAME", "YOUR S3 BUCKET NAME")
 
 lazy val commonSettings = Seq(
   version := "$version$",
   organization := "jp.pigumer",
-  scalaVersion := "2.12.2",
+  scalaVersion := "2.12.3",
   libraryDependencies ++= commonDeps
 )
 

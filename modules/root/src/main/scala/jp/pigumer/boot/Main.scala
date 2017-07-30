@@ -65,12 +65,20 @@ trait AkkaApplication {
   def bindAndHandle = Http().bindAndHandle(route, "0.0.0.0", 8080)
 }
 
-object Main {
+object Main extends App {
+  val log = LoggerFactory.getLogger(this.getClass)
 
-  def main(args: Array[String]) {
+  val app = new AkkaApplication {}
+  val binding = app.bindAndHandle
 
-    val app = new AkkaApplication {}
-    app.bindAndHandle
-  }
+  implicit val system = app.system
+  implicit val executionContext = app.executionContext
+
+  Runtime.getRuntime.addShutdownHook(new Thread {
+    override def run() {
+      binding.flatMap(_.unbind()).onComplete(_ => system.terminate())
+      log.info("Shutting down...")
+    }
+  })
 
 }
