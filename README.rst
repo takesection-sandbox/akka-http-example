@@ -3,28 +3,21 @@ Test
 
 ::
 
-  curl -v -H "Authorization: Bearer 123" http://localhost:8080/?key=abc
+
 
 Build Docker image
 ==================
 
 ::
 
-  sbt assembly
-  docker-compose up -d --build
+  $ sbt
 
-::
+  > docker:stage
+  > docker:publishLocal
+  > exit
 
-  docker tag {IMAGE_ID} {REPOSITORY_ID}
-  docker push {REPOSITORY_ID}
-
-AWS ECS
-====
-
-ecs-cli
-=======
-
-`ecs-cli <http://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_CLI.html>`_
+  $ docker run -d -p 8080:8080 --rm <image name>:<tag>
+  $ curl -v -H "Authorization: Bearer 123" http://localhost:8080/?key=abc
 
 CloudFormation
 ==============
@@ -35,43 +28,20 @@ CloudFormation
 
   BUCKET_NAME=YOUR_S3_BUCKET_NAME sbt
 
-::
 
   awscfCreateBucket TemplatesBucket
 
-  awscfUploadTemplates dev
+  awscfUploadTemplates
 
-  awscfCreateStack dev iam
+  awscfCreateStack iam
 
-  awscfCreateStack dev ecscluster
+  awscfCreateStack ecscluster
 
-  awscfCreateStack dev vpc
-  awscfCreateStack dev subnet
-  awscfCreateStack dev igw
-  awscfCreateStack dev securitygroup
+  awscfCreateStack vpc
+  awscfCreateStack subnet
+  awscfCreateStack igw
+  awscfCreateStack securitygroup
 
-  awscfCreateStack dev alb
+  awscfCreateStack alb
 
-  awscfCreateStack dev ecs
-
-::
-
-  awscfListStacks
-
-DNSName、default-tg(target-group-arn)を確認します::
-
-  awscfListExports
-
-::
-
-  ecs-cli compose -f docker-compose.yaml \
-    --project-name test-app \
-    service up \
-    --target-group-arn {default-tg} \
-    --container-name akka-http-example \
-    --container-port 8080 \
-    --role ecsServiceRole
-
-動作確認::
-
-  curl --insecure -H "Authorization: Bearer 123" https://{DNSName}/?key=1234
+  awscfCreateStack ecs

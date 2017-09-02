@@ -1,28 +1,30 @@
 import Dependencies._
 import cloudformation._
-import sbt.Keys.{libraryDependencies, mainClass}
+import sbt.Keys._
 
 val Region = "ap-northeast-1"
 val BucketName = sys.env.getOrElse("BUCKET_NAME", "YOUR S3 BUCKET NAME")
+val KeyName = sys.env.getOrElse("KEY_NAME", "YOUR KEY NAME")
+val CertificateArn = sys.env.getOrElse("CERTIFICATE_ARN", "YOUR CERTIFICATE ARN")
 
 lazy val commonSettings = Seq(
-  version := "$version$",
   organization := "jp.pigumer",
   scalaVersion := "2.12.3",
   libraryDependencies ++= commonDeps
 )
 
 lazy val root = (project in file("./modules/root"))
-  .enablePlugins(CloudformationPlugin)
+  .enablePlugins(CloudformationPlugin, JavaAppPackaging, AshScriptPlugin, DockerPlugin)
   .dependsOn(domain)
   .settings(commonSettings: _*)
   .settings(
     name := "akka-http-example",
+    dockerBaseImage := "java:8-jdk-alpine",
+    dockerExposedPorts := Seq(8080),
     libraryDependencies ++= rootDeps,
-    mainClass in assembly := Some("jp.pigumer.boot.Main"),
-    assemblyJarName in assembly := "akka-http-example.jar"
-  )
-  .settings(
+    mainClass in assembly := Some("jp.pigumer.boot.Main")
+  ).
+  settings(
     awscfSettings := AwscfSettings(
       region = Region,
       bucketName = BucketName,
@@ -56,11 +58,16 @@ lazy val root = (project in file("./modules/root"))
       ),
       "alb" → CloudformationStack(
         stackName = "alb",
-        template = "alb.yaml"
+        template = "alb.yaml",
+        parameters = Map("Certificate" → CertificateArn)
       ),
       "ecs" → CloudformationStack(
         stackName = "ecs",
-        template = "ecs.yaml"
+        template = "ecs.yaml",
+        parameters = Map(
+          "KeyName" → KeyName,
+          "ClusterName" → "ECSCluster"
+        )
       )
     )
   )
