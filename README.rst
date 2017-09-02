@@ -26,8 +26,10 @@ CloudFormation
 
 ::
 
-  BUCKET_NAME=YOUR_S3_BUCKET_NAME sbt
-
+  export BUCKET_NAME=YOUR S3 BUCKET NAME
+  export KEY_NAME=YOUR KEY NAME
+  export CERTIFICATE_ARN=CERTIFICATE ARN
+  sbt
 
   awscfCreateBucket TemplatesBucket
 
