@@ -1,12 +1,11 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Parameters:
-  KeyName:
-    Type: AWS::EC2::KeyPair::KeyName
-    Description: Name of an existing EC2 KeyPair to enable SSH access to the ECS instances.
   ClusterName:
     Type: String
     Default: ECSCluster
-    Description: A name for the cluster.
+  ImageId:
+    Type: String
+    Default: ami-b743bed1
 Resources:
   LOGGING:
     Type: AWS::Logs::LogGroup
@@ -26,12 +25,14 @@ Resources:
   ECSAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
+      HealthCheckType: 'EC2'
       VPCZoneIdentifier:
       - Fn::ImportValue: Subnet1
+      - Fn::ImportValue: Subnet2
       LaunchConfigurationName: !Ref 'ECSInstances'
-      MinSize: '1'
-      MaxSize: '1'
-      DesiredCapacity: '1'
+      MinSize: 0
+      MaxSize: 1
+      DesiredCapacity: 1
       TargetGroupARNs:
       - Fn::ImportValue: default-tg
       Tags:
@@ -41,12 +42,11 @@ Resources:
   ECSInstances:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
-      ImageId: ami-f63f6f91
+      ImageId: !Ref 'ImageId'
       InstanceType: t2.micro
       IamInstanceProfile:
         Fn::ImportValue: ECSInstanceProfile
       AssociatePublicIpAddress: true
-      KeyName: !Ref 'KeyName'
       SecurityGroups:
       - Fn::ImportValue: ECSSecurityGroup
       UserData:

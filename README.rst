@@ -22,28 +22,23 @@ Build Docker image
 CloudFormation
 ==============
 
-あらかじめ、キーペアの作成と証明書の発行とその証明書のARNを控えておきます
-
 ::
 
-  export BUCKET_NAME=YOUR S3 BUCKET NAME
-  export KEY_NAME=YOUR KEY NAME
-  export CERTIFICATE_ARN=CERTIFICATE ARN
-  sbt
+  BUCKET_NAME=<YOUR BUCKET NAME> sbt
 
-  awscfCreateBucket TemplatesBucket
+  > awscfCreateBucket TemplatesBucket
 
-  awscfUploadTemplates
+  > awscfUploadTemplates
 
-  awscfCreateStack iam
+  > awscfCreateStack iam
 
-  awscfCreateStack ecscluster
+  > awscfCreateStack ecscluster
 
-  awscfCreateStack vpc
-  awscfCreateStack subnet
-  awscfCreateStack igw
-  awscfCreateStack securitygroup
+  > awscfCreateStack vpc
+  > awscfCreateStack subnet
+  > awscfCreateStack igw
+  > awscfCreateStack securitygroup
 
-  awscfCreateStack alb
+  > awscfCreateStack alb
 
-  awscfCreateStack ecs
+  > awscfCreateStack ecs

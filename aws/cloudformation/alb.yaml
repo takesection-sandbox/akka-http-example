@@ -1,8 +1,4 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Parameters:
-  Certificate:
-    Type: String
-    Description: The Amazon Resource Name (ARN) of the certificate to associate with the listener.
 Resources:
   ALB:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -24,10 +20,8 @@ Resources:
       - Type: forward
         TargetGroupArn: !Ref 'TargetGroup'
       LoadBalancerArn: !Ref 'ALB'
-      Port: '443'
-      Protocol: HTTPS
-      Certificates:
-      - CertificateArn: !Ref 'Certificate'
+      Port: '80'
+      Protocol: HTTP
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     DependsOn: ALB
@@ -44,23 +38,14 @@ Resources:
       UnhealthyThresholdCount: 2
       VpcId:
         Fn::ImportValue: VPC
-  ECSSecurityGroupSSHinbound:
+  ECSSecurityGroupHTTPinbound:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
       GroupId:
         Fn::ImportValue: ECSSecurityGroup
       IpProtocol: tcp
-      FromPort: '22'
-      ToPort: '22'
-      CidrIp: 0.0.0.0/0
-  ECSSecurityGroupHTTPSinbound:
-    Type: AWS::EC2::SecurityGroupIngress
-    Properties:
-      GroupId:
-        Fn::ImportValue: ECSSecurityGroup
-      IpProtocol: tcp
-      FromPort: '443'
-      ToPort: '443'
+      FromPort: '80'
+      ToPort: '80'
       CidrIp: 0.0.0.0/0
 Outputs:
   TargetGroup:

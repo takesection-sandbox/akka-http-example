@@ -1,11 +1,11 @@
 import Dependencies._
-import cloudformation._
+
+import jp.pigumer.sbt.cloud.aws.cloudformation._
+
 import sbt.Keys._
 
 val Region = "ap-northeast-1"
 val BucketName = sys.env.getOrElse("BUCKET_NAME", "YOUR S3 BUCKET NAME")
-val KeyName = sys.env.getOrElse("KEY_NAME", "YOUR KEY NAME")
-val CertificateArn = sys.env.getOrElse("CERTIFICATE_ARN", "YOUR CERTIFICATE ARN")
 
 lazy val commonSettings = Seq(
   organization := "jp.pigumer",
@@ -27,45 +27,44 @@ lazy val root = (project in file("./modules/root"))
   settings(
     awscfSettings := AwscfSettings(
       region = Region,
-      bucketName = BucketName,
-      templates = file("aws/cloudformation")
+      bucketName = Some(BucketName),
+      templates = Some(file("aws/cloudformation"))
     ),
-    awscfStacks := Map(
-      "iam" → CloudformationStack(
+    awscfStacks := Stacks(
+      Alias("iam") → CloudformationStack(
         stackName = "iam",
         template = "iam.yaml",
         capabilities = Seq("CAPABILITY_NAMED_IAM")
       ),
-      "ecscluster" → CloudformationStack(
+      Alias("ecscluster") → CloudformationStack(
         stackName = "ecscluster",
         template = "ecscluster.yaml"
       ),
-      "vpc" → CloudformationStack(
+      Alias("vpc") → CloudformationStack(
         stackName = "vpc",
         template = "vpc.yaml"
       ),
-      "subnet" → CloudformationStack(
+      Alias("subnet") → CloudformationStack(
         stackName = "subnet",
         template = "subnet.yaml"
       ),
-      "igw" → CloudformationStack(
+      Alias("igw") → CloudformationStack(
         stackName = "igw",
         template = "internetgateway.yaml"
       ),
-      "securitygroup" → CloudformationStack(
+      Alias("securitygroup") → CloudformationStack(
         stackName = "securitygroup",
         template = "securitygroup.yaml"
       ),
-      "alb" → CloudformationStack(
+      Alias("alb") → CloudformationStack(
         stackName = "alb",
-        template = "alb.yaml",
-        parameters = Map("Certificate" → CertificateArn)
+        template = "alb.yaml"
       ),
-      "ecs" → CloudformationStack(
+      Alias("ecs") → CloudformationStack(
         stackName = "ecs",
         template = "ecs.yaml",
         parameters = Map(
-          "KeyName" → KeyName,
+          "ImageId" → "ami-b743bed1",
           "ClusterName" → "ECSCluster"
         )
       )
